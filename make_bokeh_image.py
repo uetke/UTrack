@@ -12,6 +12,7 @@ from bokeh.plotting import figure
 from bokeh.server.server import Server
 import pims
 import trackpy as tp
+from lib.track_2d import find_particles
 
 data_dir = 'C:\\Users\\aquiles\\Data\\run100nm'
 filename = 'data.h5'
@@ -71,7 +72,8 @@ def trackpy_initial(doc):
     slider = Slider(start=0, end=(Nframes - 1), value=0, step=1, title="Frame")
     def update(attr, old, new):
         source.data = dict(image=[data[slider.value, :, :]])
-        centers = tp.locate(data[slider.value, :, :], 9, minmass=250)
+        # centers = tp.locate(data[slider.value, :, :], 9, minmass=250)
+        centers = find_particles(data[slider.value, :, :])
         center_source.data = dict(x=centers['x'], y=centers['y'])
 
     slider.on_change('value', update)
