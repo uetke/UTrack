@@ -1,0 +1,13 @@
+<RCC>
+  <qresource prefix="icons">
+    <file>if_Save_1493294.png</file>
+    <file>if_Options_1493287.png</file>
+    <file>if_stock_person_21482.png</file>
+    <file>if_stock_select-cell_21886.png</file>
+    <file>if_Cancel_1493282.png</file>
+    <file>if_Open_1493293.png</file>
+  </qresource>
+  <qresource prefix="widgets">
+    <file>video_widget.py</file>
+  </qresource>
+</RCC>
