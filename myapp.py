@@ -1,43 +1,97 @@
+import os
 
-from random import random
+import h5py
 
-from bokeh.layouts import column
-from bokeh.models import Button
-from bokeh.palettes import RdYlBu3
-from bokeh.plotting import figure, curdoc
+import numpy as np
 
-# create a plot and style its properties
-p = figure(x_range=(0, 100), y_range=(0, 100), toolbar_location=None)
-p.border_fill_color = 'black'
-p.background_fill_color = 'black'
-p.outline_line_color = None
-p.grid.grid_line_color = None
+# from bokeh.io import curdoc
+from bokeh.layouts import column, row
+from bokeh.models import ColumnDataSource, Slider, Span, HoverTool, LinearColorMapper
+from bokeh.models.widgets import Button
+from bokeh.plotting import figure
+from bokeh.server.server import Server
+import pims
+import trackpy as tp
+# from lib.track_2d import find_particles
 
-# add a text renderer to our plot (no data yet)
-r = p.text(x=[], y=[], text=[], text_color=[], text_font_size="20pt",
-           text_baseline="middle", text_align="center")
+data_dir = '/home/aquiles/Documents/Data/Tracking/run100nm'
+filename = 'data.h5'
+file = h5py.File(os.path.join(data_dir, filename))
+data = file['Basler data']
+total_intensity = np.sum(np.sum(data[:,:,:],1),1)
+min_value = np.min(data)
+max_value = np.max(data)
+Nframes = data.shape[0]
+Nx = data.shape[2]
+Ny = data.shape[1]
+total_intensity = total_intensity/Nx*Ny
+frames = np.arange(0, Nframes, 1)
 
-i = 0
+def initial_plots(doc):
+    color_mapper = LinearColorMapper(palette="Viridis256", low=min_value, high=max_value)
+    source = ColumnDataSource(data=dict(image=[data[0, :, :]]))
+    p = figure(x_range=(0, Nx), y_range=(0, Ny))
+    p.image(image='image', x=0, y=0, dw=Nx, dh=Ny, source=source, color_mapper=color_mapper)
+    hove = HoverTool(tooltips=[("x", "$x"), ("y", "$y"), ("Intensity", "@image")])
+    p.add_tools(hove)
 
-ds = r.data_source
+    f2 = figure()
+    f2.line(frames, total_intensity, line_width=2)
+    hover = HoverTool(tooltips=[("Frame", "@x"), ("Intensity", "@y")])
+    f2.add_tools(hover)
+    slider = Slider(start=0, end=(Nframes - 1), value=0, step=1, title="Frame")
 
-# create a callback that will add a number in a random location
-def callback():
-    global i
+    vertical_line = Span(location=0,
+                         dimension='height', line_color='green',
+                         line_dash='dashed', line_width=3)
+    f2.add_layout(vertical_line)
 
-    # BEST PRACTICE --- update .data in one step with a new dict
-    new_data = dict()
-    new_data['x'] = ds.data['x'] + [random()*70 + 15]
-    new_data['y'] = ds.data['y'] + [random()*70 + 15]
-    new_data['text_color'] = ds.data['text_color'] + [RdYlBu3[i%3]]
-    new_data['text'] = ds.data['text'] + [str(i)]
-    ds.data = new_data
+    def update(attr, old, new):
+        source.data = dict(image=[data[slider.value, :, :]])
+        vertical_line.location = slider.value
 
-    i = i + 1
+    slider.on_change('value', update)
 
-# add a button widget and configure with the call back
-button = Button(label="Press Me")
-button.on_click(callback)
+    first_row = column(p, slider)
+    second_row = column(f2)
 
-# put the button and plot in a layout and add to the document
-curdoc().add_root(column(button, p))
+    layout = row(first_row, second_row)
+    doc.add_root(layout)
+
+
+def trackpy_initial(doc):
+    color_mapper = LinearColorMapper(palette="Viridis256", low=min_value, high=max_value)
+    source = ColumnDataSource(data=dict(image=[data[0, :, :]]))
+
+    f1 = figure(x_range=(0, Nx), y_range=(0, Ny))
+    f1.image(image='image', x=0, y=0, dw=Nx, dh=Ny, source=source, color_mapper=color_mapper)
+
+    center_source = ColumnDataSource(data=dict(x=[], y=[]))
+    f1.circle(x='x', y='y',source=center_source, radius=3, fill_alpha=0)
+
+    slider = Slider(start=0, end=(Nframes - 1), value=0, step=1, title="Frame")
+    def update(attr, old, new):
+        source.data = dict(image=[data[slider.value, :, :]])
+        centers = tp.locate(data[slider.value, :, :], 9, minmass=250)
+        # centers = find_particles(data[slider.value, :, :])
+        center_source.data = dict(x=centers['x'], y=centers['y'])
+
+    slider.on_change('value', update)
+
+    doc.add_root(f1)
+    doc.add_root(slider)
+
+
+# def main(doc):
+initial_plots(doc)
+trackpy_initial(doc)
+doc.title = 'Traces'
+
+# server = Server({'/': main}, num_procs=1)
+# server.start()
+#
+# if __name__ == '__main__':
+#     print('Opening Bokeh application on http://localhost:5006/')
+#
+#     server.io_loop.add_callback(server.show, "/")
+#     server.io_loop.start()
