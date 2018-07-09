@@ -36,150 +36,21 @@
     </size>
    </property>
    <layout class="QGridLayout" name="gridLayout">
-    <property name="rightMargin">
-     <number>9</number>
+    <property name="leftMargin">
+     <number>0</number>
     </property>
-    <item row="1" column="0">
-     <widget class="QWidget" name="widget_options" native="true">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-        <horstretch>2</horstretch>
-        <verstretch>2</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="baseSize">
-       <size>
-        <width>0</width>
-        <height>4</height>
-       </size>
-      </property>
-      <layout class="QFormLayout" name="formLayout">
-       <property name="verticalSpacing">
-        <number>6</number>
-       </property>
-       <item row="1" column="0">
-        <widget class="QLabel" name="label">
-         <property name="text">
-          <string>Background:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1">
-        <widget class="QComboBox" name="comboBox">
-         <item>
-          <property name="text">
-           <string>None</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string comment="Compute gaussian filter of the first frame and use in all frames">Gaussian First Frame</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string comment="Compute a gaussian filter on every frame and subtract to data">Gaussian Every Frame</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string comment="Calculate the median of every pixel and subtract to each frame">Median Full Stack</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string comment="Load a background defined by the user">User Defined</string>
-          </property>
-         </item>
-        </widget>
-       </item>
-       <item row="2" column="0">
-        <widget class="QLabel" name="label_2">
-         <property name="text">
-          <string>Threshold:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="1">
-        <widget class="QLineEdit" name="lineEdit">
-         <property name="toolTip">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Threshold value, set in the same units as the intensity of the data. Take into account that there may be background subtraction before applying the thresholding.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-        </widget>
-       </item>
-       <item row="5" column="0">
-        <widget class="QLabel" name="label_3">
-         <property name="text">
-          <string>Viscosity:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="5" column="1">
-        <widget class="QLineEdit" name="lineEdit_2"/>
-       </item>
-       <item row="4" column="1">
-        <widget class="QLineEdit" name="lineEdit_3"/>
-       </item>
-       <item row="4" column="0">
-        <widget class="QLabel" name="label_4">
-         <property name="text">
-          <string>Min Particle Size:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <widget class="QComboBox" name="comboBox_2">
-         <item>
-          <property name="text">
-           <string>Thresholding</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Trackpy</string>
-          </property>
-         </item>
-        </widget>
-       </item>
-       <item row="0" column="0">
-        <widget class="QLabel" name="label_5">
-         <property name="text">
-          <string>Algorithm</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-    </item>
-    <item row="1" column="1">
-     <spacer name="horizontalSpacer">
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-      <property name="sizeHint" stdset="0">
-       <size>
-        <width>80</width>
-        <height>20</height>
-       </size>
-      </property>
-     </spacer>
-    </item>
-    <item row="0" column="0" colspan="2">
-     <widget class="QWidget" name="widget_video" native="true">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-        <horstretch>0</horstretch>
-        <verstretch>10</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="baseSize">
-       <size>
-        <width>12</width>
-        <height>12</height>
-       </size>
-      </property>
-     </widget>
-    </item>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
+     <number>0</number>
+    </property>
+    <property name="spacing">
+     <number>0</number>
+    </property>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -230,7 +101,7 @@
     <enum>TopToolBarArea</enum>
    </attribute>
    <attribute name="toolBarBreak">
-    <bool>true</bool>
+    <bool>false</bool>
    </attribute>
    <addaction name="action_open"/>
    <addaction name="action_save"/>

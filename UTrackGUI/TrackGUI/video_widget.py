@@ -30,6 +30,7 @@ class VideoWidget(QPyDesignerCustomWidgetPlugin):
     def update_data(self, data):
         self.view.setImage(data)
 
+
 class VideoWidgetTaskMenuFactory(QExtensionFactory):
     def __init__(self, parent=None):
         super().__init__(parent=parent)
