@@ -36,7 +36,7 @@ class TrackMainWindow(QMainWindow):
 
         self.action_open.triggered.connect(self.open_file)
         self.action_locate_particles.triggered.connect(self.locate_particles)
-        # self.video_widget.imv.sigTimeChanged.connect(self.locate_particles)
+        self.video_widget.imv.sigTimeChanged.connect(self.locate_particles)
         self.data = None
         self.circles = []
 
@@ -50,7 +50,8 @@ class TrackMainWindow(QMainWindow):
         # t = threading.Thread(target=load_data, args=(self.video_widget, filename))
         # t.start()
 
-    def locate_particles(self):
+
+    def locate_particles(self, *args):
         self.centroids = tp.locate(self.data[self.video_widget.imv.currentIndex, :,:], 9, minmass=250)
 
         x, y = self.centroids['x'].tolist(), self.centroids['y'].tolist()
