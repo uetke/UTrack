@@ -9,7 +9,7 @@ from PyQt5 import uic, QtGui, QtCore
 from PyQt5.QtCore import QThread
 from PyQt5.QtWidgets import QMainWindow, QFileDialog
 from Resources import resources
-from widgets import VideoWidget, OptionsWidget
+from widgets import VideoWidget, OptionsWidget, AnalysisWidget
 
 class MyCircleOverlay(pg.EllipseROI):
     def __init__(self, pos, size, **args):
@@ -28,10 +28,10 @@ class TrackMainWindow(QMainWindow):
         self.layout = self.centralwidget.layout()
 
         self.video_widget = VideoWidget(self)
-        # self.analysis_widget = pg.PlotWidget(self)
+        self.analysis_widget = AnalysisWidget()
         self.options_widget = OptionsWidget(self)
         self.layout.addWidget(self.video_widget, 0, 0, 2, 2)
-        # self.layout.addWidget(self.analysis_widget, 0, 2, 2, -1)
+        self.layout.addWidget(self.analysis_widget, 0, 2, 2, 2)
         self.layout.addWidget(self.options_widget, 2, 0, -1, 0)
 
         self.action_open.triggered.connect(self.open_file)
@@ -52,9 +52,13 @@ class TrackMainWindow(QMainWindow):
 
 
     def locate_particles(self, *args):
-        self.centroids = tp.locate(self.data[self.video_widget.imv.currentIndex, :,:], 9, minmass=250)
+        self.centroids = tp.locate(self.data[self.video_widget.imv.currentIndex, :, :], 9, minmass=250)
 
         x, y = self.centroids['x'].tolist(), self.centroids['y'].tolist()
+        mass = self.centroids['mass']
+        hist_y, hist_x = np.histogram(mass, bins=np.linspace(min(mass), max(mass), 40))
+
+        self.analysis_widget.histogram.setData(hist_x, hist_y)
         imv_view = self.video_widget.imv.getView()
 
         for c in self.circles:
