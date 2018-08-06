@@ -9,3 +9,4 @@ class OptionsWidget(QWidget):
         super().__init__(parent=parent)
         p = os.path.dirname(__file__)
         uic.loadUi(os.path.join(p, '../Resources/options_widget.ui'), self)
+

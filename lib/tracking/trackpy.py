@@ -9,7 +9,10 @@ options = {
 }
 
 
-def find_centroids(**kwargs):
+def find_centroids(img, **kwargs):
     """Locates the centroids of the features based on the specify library. In this case we are using Trackpy.
+
     .. warning:: We should deprecate the use of trackpy and made a custom-solution
     """
+    centroids = tp.locate(img, **kwargs)
+    return centroids
